@@ -4,7 +4,7 @@ OAK中国提供的ROS1 driver，本仓库只供HKUST-UAV 和 ZJU-FAST Lab 以及
 # Installation
 Depth AI SDK 安装
 ```shell
-sudo wget -qO- https://raw.githubusercontent.com/luxonis/depthairos/
+sudo wget -qO- https://raw.githubusercontent.com/luxonis/depthai-ros/main/install_dependencies.sh
 main/install_dependencies.sh | sudo bash
 ```
 ```shell
