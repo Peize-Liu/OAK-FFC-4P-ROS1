@@ -74,6 +74,7 @@ std::tuple<dai::Pipeline, int, int >createPipeline(std::string camera_type, std:
             // camera->isp.link(xout->input);
             camera->setBoardSocket(opts.second);
             camera->setFps(FPS);
+            camera->initialControl.setFrameSyncMode(dai::CameraControl::FrameSyncMode::INPUT);
 
             if (auto_exposure_enable) {
                 camera->initialControl.setAutoExposureEnable();
@@ -164,9 +165,9 @@ if withInterrupts:
 else:
     overhead = 0.003  # Empirical, TODO add thread priority option!
     while True:
-        GPIO.write(GPIO_FSIN_2LANE, 1)
+        # GPIO.write(GPIO_FSIN_2LANE, 1)
         time.sleep(active)
-        GPIO.write(GPIO_FSIN_2LANE, 0)
+        # GPIO.write(GPIO_FSIN_2LANE, 0)
         time.sleep(period - active - overhead)
 )"));
     return std::make_tuple(pipeline, width, height);
