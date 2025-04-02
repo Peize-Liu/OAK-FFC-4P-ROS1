@@ -19,7 +19,7 @@
 #include "depthai_bridge/ImuConverter.hpp"
 #include "SyncBridgePublisher.hpp"
 
-#define FPS 30
+#define FPS 10
 
 std::map<std::string, std::tuple<dai::node::MonoCamera::Properties::SensorResolution, int, int>> mono_res_opts = {
     {"400p", {dai::node::MonoCamera::Properties::SensorResolution::THE_400_P, 640, 400}},
@@ -39,6 +39,10 @@ std::map<std::string, std::tuple<dai::node::ColorCamera::Properties::SensorResol
     // {"12mp": dai::node::ColorCamera::Properties::SensorResolution::THE_12_MP},
     // {"48mp": dai::node::ColorCamera::Properties::SensorResolution::THE_48_MP}
 };
+
+bool auto_exposure_enable;
+int exposure_time;
+int iso;
 
 std::map<std::string, dai::CameraBoardSocket> cam_socket_opts = {
     {"CAM_A", dai::CameraBoardSocket::CAM_A},
@@ -70,7 +74,13 @@ std::tuple<dai::Pipeline, int, int >createPipeline(std::string camera_type, std:
             // camera->isp.link(xout->input);
             camera->setBoardSocket(opts.second);
             camera->setFps(FPS);
-            camera->initialControl.setFrameSyncMode(dai::CameraControl::FrameSyncMode::INPUT);
+
+            if (auto_exposure_enable) {
+                camera->initialControl.setAutoExposureEnable();
+            } else {
+                camera->initialControl.setManualExposure(exposure_time, iso);
+            }
+
             camera->isp.link(sync->inputs[opts.first]);
         } else {
             dai::node::MonoCamera::Properties::SensorResolution monoResolution;
@@ -84,6 +94,12 @@ std::tuple<dai::Pipeline, int, int >createPipeline(std::string camera_type, std:
             camera->setBoardSocket(opts.second);
             camera->setFps(FPS);
             camera->initialControl.setFrameSyncMode(dai::CameraControl::FrameSyncMode::INPUT);
+
+            if (auto_exposure_enable) {
+                camera->initialControl.setAutoExposureEnable();
+            } else {
+                camera->initialControl.setManualExposure(exposure_time, iso);
+            }
         }
     }
     auto imu = pipeline.create<dai::node::IMU>();
@@ -166,12 +182,15 @@ int main(int argc, char** argv)
     std::string tfPrefix, camera_type = "color";
     std::string cameraParamUri;
     int badParams = 0;
-    std::string resolution = "720p";
+    std::string resolution = "1200p";
 
     badParams += !pnh.getParam("camera_param_uri", cameraParamUri);
     badParams += !pnh.getParam("tf_prefix", tfPrefix);
     badParams += !pnh.getParam("camera_type", camera_type);
     badParams += !pnh.getParam("resolution", resolution);
+    badParams += !pnh.getParam("auto_exposure_enable", auto_exposure_enable);
+    badParams += !pnh.getParam("exposure_time", exposure_time);
+    badParams += !pnh.getParam("iso", iso);
 
     if(badParams > 0) {
         std::cout << " Bad parameters -> " << badParams << std::endl;
