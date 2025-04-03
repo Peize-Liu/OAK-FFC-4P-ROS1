@@ -146,8 +146,9 @@ if revision >= 6:
 # Note: on R7 GPIO_FSIN_MODE_SELECT is pulled up, driving high isn't necessary (but fine to do)
 
 # GPIO initialization
-GPIO.setup(GPIO_FSIN_2LANE, GPIO.OUT)
-GPIO.write(GPIO_FSIN_2LANE, 0)
+GPIO.setup(GPIO_FSIN_2LANE, GPIO.IN)
+# GPIO.setup(GPIO_FSIN_2LANE, GPIO.OUT)
+# GPIO.write(GPIO_FSIN_2LANE, 0)
 
 GPIO.setup(GPIO_FSIN_4LANE, GPIO.IN)
 
@@ -157,7 +158,7 @@ GPIO.write(GPIO_FSIN_MODE_SELECT, 1)
 period = 1 / fps
 active = 0.001
 
-node.warn(f'FPS: {fps}  Period: {period}')
+# node.warn(f'FPS: {fps}  Period: {period}')
 
 withInterrupts = False
 if withInterrupts:
