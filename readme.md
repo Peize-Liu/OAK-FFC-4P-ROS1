@@ -1,5 +1,5 @@
 # Info
-OAK中国提供的ROS1 driver，本仓库只供HKUST-UAV 和 ZJU-FAST Lab 以及 杭州微分智飞使用，请勿扩散
+OAK中国提供的ROS1 driver
 
 # Installation
 Depth AI SDK 安装
